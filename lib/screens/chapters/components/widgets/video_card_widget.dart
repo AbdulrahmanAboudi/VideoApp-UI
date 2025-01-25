@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_video_app/core/constants/assets/app_images.dart';
 import 'package:flutter_video_app/screens/chapters/components/widgets/video_card_widget_body.dart';
+import 'package:get/get.dart';
+import 'package:flutter_video_app/screens/chapters/view_model/chapter_screen_controller.dart';
 
 class VideoCardWidget extends StatelessWidget {
   const VideoCardWidget({
     super.key,
-    this.isSeries = false,
+    required this.isSeries,
     required this.title,
     required this.status,
     required this.category,
@@ -14,7 +16,7 @@ class VideoCardWidget extends StatelessWidget {
     this.thumbnail,
   });
 
-  final bool? isSeries;
+  final bool isSeries;
   final String title;
   final String status;
   final String category;
@@ -23,8 +25,21 @@ class VideoCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ChapterScreenController>();
+
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        if (isSeries) {
+          controller.selectVideo({
+            'title': title,
+            'isSeries': isSeries,
+            'status': status,
+            'category': category,
+          });
+        } else {
+          onPressed();
+        }
+      },
       child: Container(
         constraints: BoxConstraints(maxHeight: 260.h),
         width: 317,

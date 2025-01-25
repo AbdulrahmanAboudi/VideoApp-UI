@@ -7,34 +7,33 @@ class TextType {
 
   TextType(this.font);
 
-  // Now you can create styles dynamically based on the font parameter
   TextStyleConfig get smallSize => TextStyleConfig(
         size: 12.0,
         weight: FontWeight.normal,
-        fontType: font, // Use the font parameter
+        fontType: font,
       );
 
   TextStyleConfig get mediumSize => TextStyleConfig(
         size: 16.0,
         weight: FontWeight.normal,
-        fontType: font, // Use the font parameter
+        fontType: font, 
       );
 
   TextStyleConfig get boldMediumSize => TextStyleConfig(
         size: 16.0,
         weight: FontWeight.bold,
-        fontType: font, // Use the font parameter
+        fontType: font,
       );
 
   TextStyleConfig get largeSize => TextStyleConfig(
         size: 24.0,
         weight: FontWeight.normal,
-        fontType: font, // Use the font parameter
+        fontType: font, 
       );
 
   TextStyleConfig get headingSize => TextStyleConfig(
         size: 32.0,
         weight: FontWeight.bold,
-        fontType: font, // Use the font parameter
+        fontType: font, 
       );
 }

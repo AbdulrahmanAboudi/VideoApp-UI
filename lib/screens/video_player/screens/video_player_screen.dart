@@ -14,6 +14,12 @@ class VideoPlayerScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
+      body: const Center(
+        child: Text(
+          AppStrings.videoPlayerTitle,
+          style: TextStyle(fontFamily: 'Aboreto'),
+        ),
+      ),
     );
   }
 }

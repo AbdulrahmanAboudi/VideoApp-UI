@@ -9,30 +9,38 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
       color: Colors.white,
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 0,
-          blurRadius: 5,
+          color: Colors.grey.withOpacity(0.2),
+          offset: const Offset(-2, 2),
+          blurRadius: 4,
+        ),
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
+          offset: const Offset(2, 2),
+          blurRadius: 4,
+        ),
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
           offset: const Offset(0, 2),
+          blurRadius: 4,
         ),
       ],
     ),
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.w),
       child: Column(
-        spacing: 5.h,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
             style: TextStyle(
-              fontWeight: FontWeight.w400,
               fontSize: 11.sp,
-              color: Colors.black,
+              fontWeight: FontWeight.w400,
               fontFamily: 'Aboreto',
-              overflow: TextOverflow.visible,
             ),
+            overflow: TextOverflow.visible,
             maxLines: 2,
           ),
+          SizedBox(height: 8.h),
           Padding(
             padding: EdgeInsets.only(right: 20.w),
             child: Row(
@@ -43,7 +51,11 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
                     _buildStatusAndCategoryBlock(
                       Icons.check_circle,
                       status,
-                      Colors.green,
+                      status == 'Completed'
+                          ? Colors.green
+                          : status == 'Uncompleted'
+                              ? Colors.orange
+                              : Colors.grey,
                       Icons.category,
                       category,
                       Colors.grey,
@@ -73,7 +85,7 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     ),

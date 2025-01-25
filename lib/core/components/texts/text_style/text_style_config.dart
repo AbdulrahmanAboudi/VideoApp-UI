@@ -15,12 +15,12 @@ class TextStyleConfig {
   String get fontFamily {
     switch (fontType) {
       case TextFontTypeEnum.aboreto:
-      
-        return 'Aboreto'; // Define your font family here
+        return 'Aboreto'; 
       case TextFontTypeEnum.inter:
-        return 'Inter'; // Define your font family here
+        return 'Inter';
+      // ignore: unreachable_switch_default
       default:
-        return 'Arial'; // Default font if none specified
+        return 'Arial'; 
     }
   }
 
