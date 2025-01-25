@@ -6,4 +6,7 @@ class AppStrings {
   static const String thinkingCategory = 'Thinking';
   static const String shareButton = 'Share';
   static const String saveButton = 'Save';
+
+  // Video Player Screen
+  static const String videoPlayerTitle = 'Video Player';
 }

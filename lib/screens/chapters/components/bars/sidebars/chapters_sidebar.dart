@@ -124,10 +124,13 @@ class ChaptersSidebar extends StatelessWidget {
                 ),
                 Text(
                   chapterText,
-                  style:
-                      TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Aboreto'),
                   overflow: TextOverflow.visible,
                   maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -182,15 +185,15 @@ class ChaptersSidebar extends StatelessWidget {
                                 Text(
                                   section['title']!,
                                   style: TextStyle(
-                                    fontSize: 16.sp,
-                                    decoration: isSelected
-                                        ? TextDecoration.underline
-                                        : TextDecoration.none,
-                                    decorationColor:
-                                        isSelected ? Colors.red : null,
-                                    decorationThickness:
-                                        isSelected ? 2.0 : null,
-                                  ),
+                                      fontSize: 16.sp,
+                                      decoration: isSelected
+                                          ? TextDecoration.underline
+                                          : TextDecoration.none,
+                                      decorationColor:
+                                          isSelected ? Colors.red : null,
+                                      decorationThickness:
+                                          isSelected ? 2.0 : null,
+                                      fontFamily: 'Aboreto'),
                                 ),
                               ],
                             ),

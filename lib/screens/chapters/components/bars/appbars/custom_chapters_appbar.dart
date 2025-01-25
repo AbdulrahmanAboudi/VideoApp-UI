@@ -6,22 +6,21 @@ import 'package:flutter_video_app/screens/chapters/components/buttons/header_ico
 
 PreferredSize customChaptersAppBar() {
   return PreferredSize(
-    preferredSize: Size.fromHeight(72.h),
-    child: Padding(
-      padding: EdgeInsets.only(top: 20.h),
-      child: Container(
-        width: double.infinity,
-        height: 72.h,
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.black.withOpacity(0.1),
-              width: 1.0,
-            ),
+    preferredSize: Size.fromHeight(90.h),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black.withOpacity(0.1),
+            width: 1.0,
           ),
         ),
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.0.w),
+          padding: EdgeInsets.symmetric(horizontal: 25.0.w, vertical: 12.h),
           child: Row(
             children: [
               _buildLogoWithTitle(),
@@ -37,7 +36,10 @@ PreferredSize customChaptersAppBar() {
 
 Widget _buildLogoWithTitle() {
   return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisSize:
+        MainAxisSize.min,
+    crossAxisAlignment:
+        CrossAxisAlignment.center, 
     children: [
       Image.asset(
         AppImages.appbarImage,
@@ -49,7 +51,7 @@ Widget _buildLogoWithTitle() {
         AppStrings.videosTitle,
         style: TextStyle(
           color: Colors.black,
-          fontSize: 12.sp,
+          fontSize: 12.sp, 
           fontWeight: FontWeight.w400,
         ),
       ),

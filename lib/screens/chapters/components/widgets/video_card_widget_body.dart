@@ -28,7 +28,10 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
               fontWeight: FontWeight.w400,
               fontSize: 11.sp,
               color: Colors.black,
+              fontFamily: 'Aboreto',
+              overflow: TextOverflow.visible,
             ),
+            maxLines: 2,
           ),
           Padding(
             padding: EdgeInsets.only(right: 20.w),

@@ -24,8 +24,9 @@ class VideoCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: onPressed,
       child: Container(
-        constraints: BoxConstraints(maxHeight: 230.h),
+        constraints: BoxConstraints(maxHeight: 260.h),
         width: 317,
         decoration: const BoxDecoration(
           color: Colors.white,
