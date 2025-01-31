@@ -29,4 +29,8 @@ enum VideoStatus {
         return AppColors.greyColor;
     }
   }
+
+  bool get isCompleted => this == VideoStatus.completed;
+  bool get isUncompleted => this == VideoStatus.uncompleted;
+  bool get isUnwatched => this == VideoStatus.unwatched;
 }

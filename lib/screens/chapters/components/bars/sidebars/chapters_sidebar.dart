@@ -99,8 +99,8 @@ class ChaptersSidebar extends StatelessWidget {
                           subsection;
                   return GestureDetector(
                     onTap: () => controller.selectSubsection(subsection),
-                    child: _buildSectionItem(
-                      {'title': subsection, 'status': 'Unwatched'},
+                    child: _buildSubsectionItem(
+                      subsection,
                       isSelected,
                       controller,
                       isLastItem: index == subsections.length - 1,
@@ -185,10 +185,7 @@ class ChaptersSidebar extends StatelessWidget {
                         controller.selectSection(chapterIndex, sectionIndex);
                       },
                       child: _buildSectionItem(
-                        {
-                          'title': section.title,
-                          'status': section.status,
-                        },
+                        section,
                         isSelected,
                         controller,
                         isLastItem: sectionIndex == sections.length - 1,
@@ -205,7 +202,7 @@ class ChaptersSidebar extends StatelessWidget {
   }
 
   Widget _buildStatusImage({
-    required String status,
+    required VideoStatus status,
     bool isSelected = false,
     bool isLastItem = false,
   }) {
@@ -216,19 +213,21 @@ class ChaptersSidebar extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: status == VideoStatus.completed.name
+            color: status.isCompleted
                 ? AppColors.indigoAccent
                 : AppColors.transparent,
             borderRadius: BorderRadius.circular(size / 2),
-            border: status == VideoStatus.uncompleted.name
+            border: status.isUncompleted
                 ? Border.all(color: AppColors.indigoAccent, width: 4.sp)
-                : status == VideoStatus.unwatched.name
+                : status.isUnwatched
                     ? Border.all(
-                        color: AppColors.greyColor.withOpacity(0.3), width: 2.sp)
+                        color: AppColors.greyColor.withOpacity(0.3),
+                        width: 2.sp,
+                      )
                     : null,
           ),
           child: Center(
-            child: status == VideoStatus.completed.name
+            child: status.isCompleted
                 ? const Icon(
                     Icons.check,
                     color: AppColors.whiteColor,
@@ -244,14 +243,16 @@ class ChaptersSidebar extends StatelessWidget {
             width: 2.w,
             height: isSelected ? 50.h : 40.h,
             margin: EdgeInsets.only(top: 4.h),
-            color: isSelected ? AppColors.red : AppColors.greyColor.withOpacity(0.3),
+            color: isSelected
+                ? AppColors.red
+                : AppColors.greyColor.withOpacity(0.3),
           ),
       ],
     );
   }
 
   Widget _buildSectionItem(
-    Map<String, dynamic> section,
+    ChapterSection section,
     bool isSelected,
     ChapterScreenController controller, {
     bool isLastItem = false,
@@ -264,14 +265,50 @@ class ChaptersSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildStatusImage(
-            status: section['status']!,
+            status: section.status,
             isSelected: isSelected,
             isLastItem: isLastItem,
           ),
           SizedBox(width: 4.w),
           Flexible(
             child: Text(
-              section['title']!,
+              section.title,
+              style: AppTextStyles.withDecoration(
+                AppTextStyles.h3,
+                underline: isSelected,
+                decorationColor: isSelected ? Colors.red : null,
+                decorationThickness: isSelected ? 2.0 : null,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubsectionItem(
+    String title,
+    bool isSelected,
+    ChapterScreenController controller, {
+    bool isLastItem = false,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStatusImage(
+            status: controller.getSubsectionStatus(title),
+            isSelected: isSelected,
+            isLastItem: isLastItem,
+          ),
+          SizedBox(width: 4.w),
+          Flexible(
+            child: Text(
+              title,
               style: AppTextStyles.withDecoration(
                 AppTextStyles.h3,
                 underline: isSelected,

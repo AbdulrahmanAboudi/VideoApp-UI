@@ -3,7 +3,7 @@ import 'package:flutter_video_app/screens/chapters/domain/video_model.dart';
 
 class ChapterSection {
   final String title;
-  final String status;
+  final VideoStatus status;
   final List<VideoModel> videos;
 
   ChapterSection({
@@ -15,7 +15,7 @@ class ChapterSection {
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'status': status,
+      'status': status.name,
       'videos': videos.map((v) => v.toMap()).toList(),
     };
   }
@@ -25,6 +25,7 @@ class ChapterSection {
   }
 
   List<String> getSubsectionsForVideo(String videoTitle) {
+    // First check direct videos in this section
     final video = videos.firstWhere(
       (v) => v.title == videoTitle && v.isSeries,
       orElse: () => VideoModel(
@@ -33,18 +34,57 @@ class ChapterSection {
         category: '',
       ),
     );
-    return video.subsections?.map((s) => s.title).toList() ?? [];
+    if (video.subsections?.isNotEmpty ?? false) {
+      return video.subsections!.map((s) => s.title).toList();
+    }
+
+    // If not found, check in subsections
+    for (var video in videos) {
+      if (video.isSeries) {
+        for (var subsection in video.subsections ?? []) {
+          final nestedVideo = subsection.videos.firstWhere(
+            (v) => v.title == videoTitle && v.isSeries,
+            orElse: () => VideoModel(
+              title: '',
+              status: VideoStatus.unwatched,
+              category: '',
+            ),
+          );
+          if (nestedVideo.subsections?.isNotEmpty ?? false) {
+            return nestedVideo.subsections!.map((s) => s.title).toList();
+          }
+        }
+      }
+    }
+    return [];
   }
 
   List<VideoModel> getVideosForSubsection(String subsectionTitle) {
+    // First check direct subsections
     for (var video in videos) {
       if (video.isSeries) {
         final subsection = video.subsections?.firstWhere(
           (s) => s.title == subsectionTitle,
           orElse: () => SubsectionModel(title: '', videos: []),
         );
-        if (subsection != null) {
+        if (subsection != null && subsection.videos.isNotEmpty) {
           return subsection.videos;
+        }
+
+        // Check nested subsections
+        for (var subsection in video.subsections ?? []) {
+          for (var nestedVideo in subsection.videos) {
+            if (nestedVideo.isSeries) {
+              final nestedSubsection = nestedVideo.subsections?.firstWhere(
+                (s) => s.title == subsectionTitle,
+                orElse: () => SubsectionModel(title: '', videos: []),
+              );
+              if (nestedSubsection != null &&
+                  nestedSubsection.videos.isNotEmpty) {
+                return nestedSubsection.videos;
+              }
+            }
+          }
         }
       }
     }

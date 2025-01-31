@@ -27,7 +27,7 @@ class ChapterScreenController extends GetxController {
         sections: [
           ChapterSection(
             title: '1.1',
-            status: 'Completed',
+            status: VideoStatus.completed,
             videos: [
               VideoModel(
                 title: 'Introduction to Section 1.1',
@@ -61,7 +61,7 @@ class ChapterScreenController extends GetxController {
                     videos: [
                       VideoModel(
                         title: 'Advanced Concepts Part 1',
-                        status: VideoStatus.unwatched,
+                        status: VideoStatus.completed,
                         category: 'Series',
                       ),
                     ],
@@ -71,7 +71,7 @@ class ChapterScreenController extends GetxController {
                     videos: [
                       VideoModel(
                         title: 'Final Section Part 1',
-                        status: VideoStatus.unwatched,
+                        status: VideoStatus.uncompleted,
                         category: 'Series',
                       ),
                     ],
@@ -82,22 +82,22 @@ class ChapterScreenController extends GetxController {
           ),
           ChapterSection(
             title: '1.2',
-            status: 'Uncompleted',
+            status: VideoStatus.uncompleted,
             videos: sectionVideos['1.2'] ?? [],
           ),
           ChapterSection(
             title: '1.3',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '1.4',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '1.5',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
         ],
@@ -107,27 +107,27 @@ class ChapterScreenController extends GetxController {
         sections: [
           ChapterSection(
             title: '2.1',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '2.2',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '2.3',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '2.4',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
           ChapterSection(
             title: '2.5',
-            status: 'Unwatched',
+            status: VideoStatus.unwatched,
             videos: [],
           ),
         ],
@@ -316,6 +316,40 @@ class ChapterScreenController extends GetxController {
     } else {
       return VideoStatus.unwatched.name;
     }
+  }
+
+  VideoStatus getSubsectionStatus(String subsectionTitle) {
+    if (selectedSection == null || selectedVideo == null)
+      return VideoStatus.unwatched;
+
+    final section = chapters[selectedSection!['chapterIndex']]
+        .sections[selectedSection!['sectionIndex']];
+
+    final video = section.videos.firstWhere(
+      (v) => v.title == selectedVideo!['title'] && v.isSeries,
+      orElse: () => VideoModel(
+        title: '',
+        status: VideoStatus.unwatched,
+        category: '',
+      ),
+    );
+
+    final subsection = video.subsections?.firstWhere(
+      (s) => s.title == subsectionTitle,
+      orElse: () => SubsectionModel(title: '', videos: []),
+    );
+
+    if (subsection == null) return VideoStatus.unwatched;
+
+    // Check if all videos in subsection are completed
+    if (subsection.videos.every((v) => v.status == VideoStatus.completed)) {
+      return VideoStatus.completed;
+    }
+    // Check if any video is uncompleted
+    if (subsection.videos.any((v) => v.status == VideoStatus.uncompleted)) {
+      return VideoStatus.uncompleted;
+    }
+    return VideoStatus.unwatched;
   }
 
   @override
