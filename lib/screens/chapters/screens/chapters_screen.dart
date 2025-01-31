@@ -1,42 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
+import 'package:flutter_video_app/core/enums/message_enum.dart';
 import 'package:flutter_video_app/screens/chapters/components/bars/appbars/custom_chapters_appbar.dart';
-import 'package:flutter_video_app/screens/chapters/components/bars/sidebars/chapters_sidebar.dart';
-import 'package:flutter_video_app/screens/chapters/components/widgets/video_card_widget.dart';
+import 'package:flutter_video_app/screens/chapters/components/widgets/chapters_screen_body.dart';
+import 'package:get/get.dart';
+import 'package:flutter_video_app/screens/chapters/view_model/chapter_screen_controller.dart';
 
 class ChaptersScreen extends StatelessWidget {
   const ChaptersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.put(ChapterScreenController());
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteColor,
       appBar: customChaptersAppBar(),
-      body: Padding(
-        padding: EdgeInsets.all(6.w),
-        child: Row(
-          spacing: 8.w,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ChaptersSidebar(),
-            SingleChildScrollView(
-              child: Column(
-                spacing: 12.h,
-                children: List.generate(
-                  (10),
-                  (index) {
-                    return VideoCardWidget(
-                      title: 'Title',
-                      status: 'Status',
-                      category: 'Category',
-                      onPressed: () {},
-                    );
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
+      body: GetBuilder<ChapterScreenController>(
+        builder: (controller) {
+          final videos = controller.currentSectionVideos;
+
+          if (controller.selectedSection == null) {
+            return const ChaptersScreenBody(
+              videos: [],
+              showEmptyMessage: true,
+              customMessage: CustomMessage.selectSection,
+            );
+          }
+
+          if (videos.isEmpty) {
+            controller.showNoVideosSnackbar();
+
+            return const ChaptersScreenBody(
+              videos: [],
+              showEmptyMessage: true,
+              customMessage: CustomMessage.noVideos,
+            );
+          }
+
+          return ChaptersScreenBody(
+            videos: videos,
+            showEmptyMessage: false,
+          );
+        },
       ),
     );
   }

@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_video_app/core/constants/assets/app_images.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
 import 'package:flutter_video_app/core/constants/strings/app_strings.dart';
+import 'package:flutter_video_app/core/styles/text_styles.dart';
 import 'package:flutter_video_app/screens/chapters/components/buttons/header_icon_buttons.dart';
 
 PreferredSize customChaptersAppBar() {
   return PreferredSize(
-    preferredSize: Size.fromHeight(72.h),
-    child: Padding(
-      padding: EdgeInsets.only(top: 20.h),
-      child: Container(
-        width: double.infinity,
-        height: 72.h,
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.black.withOpacity(0.1),
-              width: 1.0,
-            ),
+    preferredSize: Size.fromHeight(90.h),
+    child: Container(
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.blackColor.withOpacity(0.1),
+            width: 1.0,
           ),
         ),
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.0.w),
+          padding: EdgeInsets.symmetric(horizontal: 25.0.w, vertical: 12.h),
           child: Row(
             children: [
               _buildLogoWithTitle(),
@@ -37,21 +38,18 @@ PreferredSize customChaptersAppBar() {
 
 Widget _buildLogoWithTitle() {
   return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Image.asset(
         AppImages.appbarImage,
         width: 32.w,
         height: 32.h,
       ),
-      SizedBox(height: 4.h), 
+      SizedBox(height: 4.h),
       Text(
         AppStrings.videosTitle,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w400,
-        ),
+        style: AppTextStyles.h3.copyWith(color: AppColors.blackColor),
       ),
     ],
   );

@@ -1,0 +1,4 @@
+enum TextFontTypeEnum {
+  aboreto,
+  inter,
+}

@@ -1,35 +1,48 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_video_app/core/constants/assets/app_images.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
 import 'package:flutter_video_app/core/constants/strings/app_strings.dart';
+import 'package:flutter_video_app/core/enums/video_status_enum.dart';
+import 'package:flutter_video_app/core/styles/text_styles.dart';
 
-Widget customVideoCardWidgetBody(String title, String status, String category) {
+Widget customVideoCardWidgetBody(
+    String title, VideoStatus status, String category) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: AppColors.whiteColor,
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 0,
-          blurRadius: 5,
+          color: AppColors.greyColor.withOpacity(0.2),
+          offset: const Offset(-2, 2),
+          blurRadius: 4,
+        ),
+        BoxShadow(
+          color: AppColors.greyColor.withOpacity(0.2),
+          offset: const Offset(2, 2),
+          blurRadius: 4,
+        ),
+        BoxShadow(
+          color: AppColors.greyColor.withOpacity(0.2),
           offset: const Offset(0, 2),
+          blurRadius: 4,
         ),
       ],
     ),
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.w),
       child: Column(
-        spacing: 5.h,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 11.sp,
-              color: Colors.black,
-            ),
+            style: AppTextStyles.caption,
+            overflow: TextOverflow.visible,
+            maxLines: 2,
           ),
+          SizedBox(height: 8.h),
           Padding(
             padding: EdgeInsets.only(right: 20.w),
             child: Row(
@@ -39,11 +52,11 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
                   children: [
                     _buildStatusAndCategoryBlock(
                       Icons.check_circle,
-                      status,
-                      Colors.green,
+                      status.name,
+                      status.color,
                       Icons.category,
                       category,
-                      Colors.grey,
+                      AppColors.greyColor,
                     ),
                   ],
                 ),
@@ -70,7 +83,7 @@ Widget customVideoCardWidgetBody(String title, String status, String category) {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     ),
@@ -99,11 +112,7 @@ Widget _buildStatusAndCategoryBlock(
           ),
           Text(
             statusText,
-            style: TextStyle(
-              color: statusColor,
-              fontWeight: FontWeight.w400,
-              fontSize: 10.sp,
-            ),
+            style: AppTextStyles.smallCaption.copyWith(color: statusColor),
           )
         ],
       ),
@@ -117,11 +126,7 @@ Widget _buildStatusAndCategoryBlock(
           ),
           Text(
             categoryText,
-            style: TextStyle(
-              color: categoryColor,
-              fontWeight: FontWeight.w400,
-              fontSize: 10.sp,
-            ),
+            style: AppTextStyles.smallCaption.copyWith(color: categoryColor),
           )
         ],
       )
@@ -139,10 +144,8 @@ Widget _buildTypeOfButton(String icon, String buttonText) {
       ),
       Text(
         buttonText,
-        style: TextStyle(
-          color: Colors.black.withOpacity(0.5),
-          fontSize: 8.sp,
-          fontWeight: FontWeight.w400,
+        style: AppTextStyles.xSmallCaption.copyWith(
+          color: AppColors.blackColor.withOpacity(0.5),
         ),
       )
     ],
