@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_video_app/core/constants/assets/app_images.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
+import 'package:flutter_video_app/core/enums/video_status_enum.dart';
 import 'package:flutter_video_app/screens/chapters/components/widgets/video_card_widget_body.dart';
 import 'package:get/get.dart';
 import 'package:flutter_video_app/screens/chapters/view_model/chapter_screen_controller.dart';
@@ -18,7 +20,7 @@ class VideoCardWidget extends StatelessWidget {
 
   final bool isSeries;
   final String title;
-  final String status;
+  final VideoStatus status;
   final String category;
   final VoidCallback onPressed;
   final String? thumbnail;
@@ -44,7 +46,7 @@ class VideoCardWidget extends StatelessWidget {
         constraints: BoxConstraints(maxHeight: 260.h),
         width: 317,
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: AppColors.whiteColor,
         ),
         child: Column(
           children: [

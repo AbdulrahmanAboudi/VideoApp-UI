@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_app/core/constants/strings/app_strings.dart';
+import 'package:flutter_video_app/core/styles/text_styles.dart';
 
 class VideoPlayerScreen extends StatelessWidget {
   const VideoPlayerScreen({super.key});
@@ -8,16 +9,16 @@ class VideoPlayerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           AppStrings.videoPlayerTitle,
-          style: TextStyle(fontFamily: 'Aboreto'),
+          style: AppTextStyles.h1,
         ),
         centerTitle: true,
       ),
-      body: const Center(
+      body: Center(
         child: Text(
           AppStrings.videoPlayerTitle,
-          style: TextStyle(fontFamily: 'Aboreto'),
+          style: AppTextStyles.h1,
         ),
       ),
     );

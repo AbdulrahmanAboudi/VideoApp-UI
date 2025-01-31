@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_video_app/core/enums/message_enum.dart';
+import 'package:flutter_video_app/core/styles/text_styles.dart';
 import 'package:flutter_video_app/screens/chapters/components/bars/sidebars/chapters_sidebar.dart';
 import 'package:flutter_video_app/screens/chapters/components/widgets/video_card_shimmer.dart';
 import 'package:flutter_video_app/screens/chapters/components/widgets/video_card_widget.dart';
+import 'package:flutter_video_app/screens/chapters/domain/video_model.dart';
 import 'package:flutter_video_app/screens/chapters/view_model/chapter_screen_controller.dart';
 import 'package:flutter_video_app/screens/video_player/screens/video_player_screen.dart';
 import 'package:get/get.dart';
@@ -12,12 +15,12 @@ class ChaptersScreenBody extends StatelessWidget {
     super.key,
     required this.videos,
     required this.showEmptyMessage,
-    this.emptyMessage,
+    this.customMessage = CustomMessage.empty,
   });
 
-  final List<Map<String, dynamic>> videos;
+  final List<VideoModel> videos;
   final bool showEmptyMessage;
-  final String? emptyMessage;
+  final CustomMessage customMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +56,8 @@ class ChaptersScreenBody extends StatelessWidget {
                     if (showEmptyMessage) {
                       return Center(
                         child: Text(
-                          emptyMessage ?? '',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontFamily: 'Aboreto',
-                            color: Colors.grey,
-                          ),
+                          customMessage.message,
+                          style: AppTextStyles.h3,
                           textAlign: TextAlign.center,
                         ),
                       );
@@ -70,11 +69,11 @@ class ChaptersScreenBody extends StatelessWidget {
                         children: videos.map(
                           (video) {
                             return VideoCardWidget(
-                              isSeries: video['isSeries'] ?? false,
-                              title: video['title'] ?? '',
-                              status: video['status'] ?? '',
-                              category: video['category'] ?? '',
-                              onPressed: video['isSeries'] == true
+                              isSeries: video.isSeries,
+                              title: video.title,
+                              status: video.status,
+                              category: video.category,
+                              onPressed: video.isSeries
                                   ? () {}
                                   : () =>
                                       Get.to(() => const VideoPlayerScreen()),

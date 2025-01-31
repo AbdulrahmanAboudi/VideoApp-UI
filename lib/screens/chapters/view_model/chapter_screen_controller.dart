@@ -1,7 +1,11 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
 import 'package:flutter_video_app/core/constants/strings/app_strings.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_app/screens/chapters/domain/video_model.dart';
+import 'package:flutter_video_app/core/enums/video_status_enum.dart';
+import 'package:flutter_video_app/screens/chapters/domain/chapter_model.dart';
 
 class ChapterScreenController extends GetxController {
   Map<String, dynamic>? selectedSection;
@@ -12,187 +16,180 @@ class ChapterScreenController extends GetxController {
   bool _hasShownSnackbar = false;
   final ScrollController sidebarScrollController = ScrollController();
 
-  final List<Map<String, dynamic>> chapters = [
-    {
-      'title': 'Chapter 1',
-      'sections': [
-        {'title': '1.1', 'status': 'Completed'},
-        {'title': '1.2', 'status': 'Uncompleted'},
-        {'title': '1.3', 'status': 'Unwatched'},
-        {'title': '1.4', 'status': 'Unwatched'},
-        {'title': '1.5', 'status': 'Unwatched'},
-      ],
-    },
-    {
-      'title': 'Chapter 2',
-      'sections': [
-        {'title': '2.1', 'status': 'Uncompleted'},
-        {'title': '2.2', 'status': 'Completed'},
-        {'title': '2.3', 'status': 'Unwatched'},
-        {'title': '2.4', 'status': 'Unwatched'},
-        {'title': '2.5', 'status': 'Unwatched'},
-      ],
-    },
-    {
-      'title': 'Chapter 3',
-      'sections': [
-        {'title': '3.1', 'status': 'Completed'},
-        {'title': '3.2', 'status': 'Completed'},
-        {'title': '3.3', 'status': 'Uncompleted'},
-        {'title': '3.4', 'status': 'Unwatched'},
-        {'title': '3.5', 'status': 'Unwatched'},
-      ],
-    },
-    {
-      'title': 'Chapter 4',
-      'sections': [
-        {'title': '4.1', 'status': 'Unwatched'},
-        {'title': '4.2', 'status': 'Completed'},
-        {'title': '4.3', 'status': 'Completed'},
-        {'title': '4.4', 'status': 'Uncompleted'},
-        {'title': '4.5', 'status': 'Unwatched'},
-      ],
-    },
-    {
-      'title': 'Chapter 5',
-      'sections': [
-        {'title': '5.1', 'status': 'Unwatched'},
-        {'title': '5.2', 'status': 'Uncompleted'},
-        {'title': '5.3', 'status': 'Completed'},
-        {'title': '5.4', 'status': 'Completed'},
-        {'title': '5.5', 'status': 'Unwatched'},
-      ],
-    },
-    {
-      'title': 'Chapter 6',
-      'sections': [
-        {'title': '6.1', 'status': 'Completed'},
-        {'title': '6.2', 'status': 'Unwatched'},
-        {'title': '6.3', 'status': 'Uncompleted'},
-        {'title': '6.4', 'status': 'Completed'},
-        {'title': '6.5', 'status': 'Completed'},
-      ],
-    },
-  ];
+  late final List<ChapterModel> chapters;
 
-  final Map<String, List<String>> sectionSubsections = {
-    '1.1': ['1.1.1', '1.1.2', '1.1.3'],
-    '1.2': ['1.2.1', '1.2.2'],
-  };
-
-  final Map<String, List<Map<String, dynamic>>> sectionVideos = {
-    '1.1': [
-      {
-        'title': 'Introduction to Section 1.1',
-        'status': 'Completed',
-        'category': 'Basics',
-        'isSeries': false,
-      },
-      {
-        'title': 'Core Concepts of 1.1',
-        'status': 'Completed',
-        'category': 'Fundamentals',
-        'isSeries': true,
-      },
-    ],
-    '1.2': [
-      {
-        'title': 'Getting Started with 1.2',
-        'status': 'Uncompleted',
-        'category': 'Intermediate',
-        'isSeries': false,
-      },
-      {
-        'title': 'Getting Started with 1.2',
-        'status': 'Uncompleted',
-        'category': 'Intermediate',
-        'isSeries': false,
-      },
-      {
-        'title': 'Getting Started with 1.2',
-        'status': 'Uncompleted',
-        'category': 'Intermediate',
-        'isSeries': false,
-      },
-      {
-        'title': 'Getting Started with 1.2',
-        'status': 'Uncompleted',
-        'category': 'Intermediate',
-        'isSeries': false,
-      },
-    ],
-  };
-
-  final Map<String, List<String>> videoSubsections = {
-    'Core Concepts of 1.1': ['1.1.1', '1.1.2', '1.1.3'],
-  };
-
-  final Map<String, List<Map<String, dynamic>>> subsectionVideos = {
-    '1.1.1': [
-      {
-        'title': 'Part 1 of Series',
-        'status': 'Completed',
-        'category': 'Series',
-        'isSeries': false,
-      },
-      {
-        'title': 'Part 2 of Series',
-        'status': 'Completed',
-        'category': 'Series',
-        'isSeries': false,
-      },
-    ],
-    '1.1.2': [
-      {
-        'title': 'Advanced Concepts Part 1',
-        'status': 'Unwatched',
-        'category': 'Series',
-        'isSeries': false,
-      },
-    ],
-    '1.1.3': [
-      {
-        'title': 'Final Section Part 1',
-        'status': 'Unwatched',
-        'category': 'Series',
-        'isSeries': false,
-      },
-    ],
-  };
-
-  List<Map<String, dynamic>> get currentSectionVideos {
-    if (selectedSection == null) return [];
-
-    final sectionTitle =
-        '${selectedSection!['chapterIndex'] + 1}.${selectedSection!['sectionIndex'] + 1}';
-
-    if (showingSubsections && selectedVideo != null) {
-      final subsection = selectedVideo!['currentSubsection'];
-      return subsectionVideos[subsection]?.cast<Map<String, dynamic>>() ?? [];
-    }
-
-    return sectionVideos[sectionTitle]?.cast<Map<String, dynamic>>() ?? [];
+  @override
+  void onInit() {
+    super.onInit();
+    chapters = [
+      ChapterModel(
+        title: 'Chapter 1',
+        sections: [
+          ChapterSection(
+            title: '1.1',
+            status: 'Completed',
+            videos: [
+              VideoModel(
+                title: 'Introduction to Section 1.1',
+                status: VideoStatus.completed,
+                category: 'Basics',
+                isSeries: false,
+              ),
+              VideoModel(
+                title: 'Core Concepts of 1.1',
+                status: VideoStatus.completed,
+                category: 'Fundamentals',
+                isSeries: true,
+                subsections: [
+                  SubsectionModel(
+                    title: '1.1.1',
+                    videos: [
+                      VideoModel(
+                        title: 'Part 1 of Series',
+                        status: VideoStatus.completed,
+                        category: 'Series',
+                      ),
+                      VideoModel(
+                        title: 'Part 2 of Series',
+                        status: VideoStatus.completed,
+                        category: 'Series',
+                      ),
+                    ],
+                  ),
+                  SubsectionModel(
+                    title: '1.1.2',
+                    videos: [
+                      VideoModel(
+                        title: 'Advanced Concepts Part 1',
+                        status: VideoStatus.unwatched,
+                        category: 'Series',
+                      ),
+                    ],
+                  ),
+                  SubsectionModel(
+                    title: '1.1.3',
+                    videos: [
+                      VideoModel(
+                        title: 'Final Section Part 1',
+                        status: VideoStatus.unwatched,
+                        category: 'Series',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          ChapterSection(
+            title: '1.2',
+            status: 'Uncompleted',
+            videos: sectionVideos['1.2'] ?? [],
+          ),
+          ChapterSection(
+            title: '1.3',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '1.4',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '1.5',
+            status: 'Unwatched',
+            videos: [],
+          ),
+        ],
+      ),
+      ChapterModel(
+        title: 'Chapter 2',
+        sections: [
+          ChapterSection(
+            title: '2.1',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '2.2',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '2.3',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '2.4',
+            status: 'Unwatched',
+            videos: [],
+          ),
+          ChapterSection(
+            title: '2.5',
+            status: 'Unwatched',
+            videos: [],
+          ),
+        ],
+      ),
+    ];
   }
 
-  List<Map<String, dynamic>> getSectionItems(
-      int chapterIndex, int sectionIndex) {
-    final sectionTitle = '${chapterIndex + 1}.${sectionIndex + 1}';
-    if (sectionSubsections.containsKey(sectionTitle) &&
-        sectionVideos[sectionTitle]
-                ?.any((video) => video['isSeries'] == true) ==
-            true) {
-      return sectionSubsections[sectionTitle]!
-          .map((subsection) => {
-                'title': subsection,
-                'status': 'Unwatched',
-                'isSubsection': true,
-              })
-          .toList();
-    } else {
-      return [
-        chapters[chapterIndex]['sections'][sectionIndex] as Map<String, dynamic>
-      ];
+  Map<String, List<VideoModel>> sectionVideos = {
+    '1.1': [
+      VideoModel(
+        title: 'Introduction to Section 1.1',
+        status: VideoStatus.completed,
+        category: 'Basics',
+        isSeries: false,
+      ),
+      VideoModel(
+        title: 'Core Concepts of 1.1',
+        status: VideoStatus.completed,
+        category: 'Fundamentals',
+        isSeries: true,
+      ),
+    ],
+    '1.2': [
+      VideoModel(
+        title: 'Getting Started with 1.2',
+        status: VideoStatus.uncompleted,
+        category: 'Intermediate',
+        isSeries: false,
+      ),
+      VideoModel(
+        title: 'Getting Started with 1.2',
+        status: VideoStatus.uncompleted,
+        category: 'Intermediate',
+        isSeries: false,
+      ),
+      VideoModel(
+        title: 'Getting Started with 1.2',
+        status: VideoStatus.uncompleted,
+        category: 'Intermediate',
+        isSeries: false,
+      ),
+      VideoModel(
+        title: 'Getting Started with 1.2',
+        status: VideoStatus.uncompleted,
+        category: 'Intermediate',
+        isSeries: false,
+      ),
+    ],
+  };
+
+  List<VideoModel> get currentSectionVideos {
+    if (selectedSection == null) return [];
+
+    final section = chapters[selectedSection!['chapterIndex']]
+        .sections[selectedSection!['sectionIndex']];
+
+    if (showingSubsections && selectedVideo != null) {
+      return section
+          .getVideosForSubsection(selectedVideo!['currentSubsection']);
     }
+
+    return section.currentVideos;
   }
 
   void showNoVideosSnackbar() {
@@ -201,8 +198,8 @@ class ChapterScreenController extends GetxController {
         AppStrings.noVideos,
         AppStrings.noVideosAvailable,
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: AppColors.red,
+        colorText: AppColors.whiteColor,
         margin: EdgeInsets.all(8.w),
       );
       _hasShownSnackbar = true;
@@ -233,24 +230,51 @@ class ChapterScreenController extends GetxController {
   }
 
   void selectVideo(Map<String, dynamic> video) {
-    if (video['isSeries'] == true &&
-        videoSubsections.containsKey(video['title'])) {
-      selectedVideo = video;
-      showingSubsections = true;
-      update();
-    }
-  }
+    if (video['isSeries'] == true) {
+      final section = chapters[selectedSection!['chapterIndex']]
+          .sections[selectedSection!['sectionIndex']];
 
-  void selectSubsection(String subsection) {
-    if (selectedVideo != null) {
-      selectedVideo = {...selectedVideo!, 'currentSubsection': subsection};
-      update();
+      final videoModel = section.videos.firstWhere(
+        (v) => v.title == video['title'],
+        orElse: () => VideoModel(
+          title: '',
+          status: VideoStatus.unwatched,
+          category: '',
+        ),
+      );
+
+      if (videoModel.subsections?.isNotEmpty ?? false) {
+        selectedVideo = {
+          'title': videoModel.title,
+          'isSeries': true,
+          'status': videoModel.status.name,
+          'category': videoModel.category,
+          'currentSubsection':
+              videoModel.subsections![0].title, // Set initial subsection
+        };
+        showingSubsections = true;
+        update();
+      }
     }
   }
 
   List<String> getCurrentSubsections() {
     if (!showingSubsections || selectedVideo == null) return [];
-    return videoSubsections[selectedVideo!['title']] ?? [];
+
+    final section = chapters[selectedSection!['chapterIndex']]
+        .sections[selectedSection!['sectionIndex']];
+
+    return section.getSubsectionsForVideo(selectedVideo!['title']);
+  }
+
+  void selectSubsection(String subsection) {
+    if (selectedVideo != null) {
+      selectedVideo = {
+        ...selectedVideo!,
+        'currentSubsection': subsection,
+      };
+      update();
+    }
   }
 
   bool isSubsectionSelected(String subsection) {
@@ -273,28 +297,24 @@ class ChapterScreenController extends GetxController {
   bool isChapterMostlyCompleted(String sectionTitle) {
     final videos = sectionVideos[sectionTitle] ?? [];
     if (videos.isEmpty) return false;
-
-    // Check if ALL videos are completed
-    return videos.every((video) => video['status'] == 'Completed');
+    return videos.every((video) => video.status == VideoStatus.completed);
   }
 
   bool hasUncompletedVideos(String sectionTitle) {
     final videos = sectionVideos[sectionTitle] ?? [];
     if (videos.isEmpty) return false;
-
-    // Check if ANY video is uncompleted
-    return videos.any((video) => video['status'] == 'Uncompleted');
+    return videos.any((video) => video.status == VideoStatus.uncompleted);
   }
 
   String getSectionStatus(int chapterIndex, int sectionIndex) {
     final sectionTitle = '${chapterIndex + 1}.${sectionIndex + 1}';
 
     if (isChapterMostlyCompleted(sectionTitle)) {
-      return 'Completed';
+      return VideoStatus.completed.name;
     } else if (hasUncompletedVideos(sectionTitle)) {
-      return 'Uncompleted';
+      return VideoStatus.uncompleted.name;
     } else {
-      return 'Unwatched';
+      return VideoStatus.unwatched.name;
     }
   }
 

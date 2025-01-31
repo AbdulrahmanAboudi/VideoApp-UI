@@ -1,8 +1,14 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_video_app/core/constants/assets/app_images.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
+import 'package:flutter_video_app/core/enums/video_status_enum.dart';
 import 'package:flutter_video_app/screens/chapters/view_model/chapter_screen_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_app/screens/chapters/domain/chapter_model.dart';
+import 'package:flutter_video_app/core/styles/text_styles.dart';
 
 class ChaptersSidebar extends StatelessWidget {
   const ChaptersSidebar({super.key});
@@ -25,7 +31,7 @@ class ChaptersSidebar extends StatelessWidget {
       height: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.black.withOpacity(0.1),
+          color: AppColors.blackColor.withOpacity(0.1),
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(6.r),
@@ -40,11 +46,9 @@ class ChaptersSidebar extends StatelessWidget {
                   controller.chapters.length,
                   (chapterIndex) {
                     final chapter = controller.chapters[chapterIndex];
-                    final sections =
-                        chapter['sections'] as List<Map<String, dynamic>>;
                     return _buildChapterSection(
-                      chapter['title'] as String,
-                      sections,
+                      chapter.title,
+                      chapter.sections,
                       chapterIndex,
                       controller,
                     );
@@ -56,7 +60,7 @@ class ChaptersSidebar extends StatelessWidget {
           IconButton(
             icon: const Icon(
               Icons.keyboard_double_arrow_down,
-              color: Colors.grey,
+              color: AppColors.greyColor,
             ),
             onPressed: controller.scrollToBottom,
           ),
@@ -72,7 +76,7 @@ class ChaptersSidebar extends StatelessWidget {
       height: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.black.withOpacity(0.1),
+          color: AppColors.blackColor.withOpacity(0.1),
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(6.r),
@@ -110,7 +114,7 @@ class ChaptersSidebar extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: AppColors.greyColor.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -118,7 +122,7 @@ class ChaptersSidebar extends StatelessWidget {
             child: IconButton(
               icon: const Icon(
                 Icons.keyboard_double_arrow_down,
-                color: Colors.grey,
+                color: AppColors.greyColor,
               ),
               onPressed: controller.scrollToBottom,
             ),
@@ -130,7 +134,7 @@ class ChaptersSidebar extends StatelessWidget {
 
   Widget _buildChapterSection(
     String chapterText,
-    List<Map<String, dynamic>> sections,
+    List<ChapterSection> sections,
     int chapterIndex,
     ChapterScreenController controller,
   ) {
@@ -140,7 +144,7 @@ class ChaptersSidebar extends StatelessWidget {
           width: double.infinity,
           height: 62.h,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.blackColor.withOpacity(0.05),
           ),
           child: Center(
             child: Column(
@@ -153,11 +157,7 @@ class ChaptersSidebar extends StatelessWidget {
                 ),
                 Text(
                   chapterText,
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Aboreto',
-                  ),
+                  style: AppTextStyles.caption,
                   overflow: TextOverflow.visible,
                   maxLines: 2,
                   textAlign: TextAlign.center,
@@ -172,11 +172,7 @@ class ChaptersSidebar extends StatelessWidget {
             children: List.generate(
               sections.length,
               (sectionIndex) {
-                final section =
-                    Map<String, dynamic>.from(sections[sectionIndex]);
-                section['status'] =
-                    controller.getSectionStatus(chapterIndex, sectionIndex);
-
+                final section = sections[sectionIndex];
                 final isSelected = controller
                             .selectedSection?['chapterIndex'] ==
                         chapterIndex &&
@@ -189,7 +185,10 @@ class ChaptersSidebar extends StatelessWidget {
                         controller.selectSection(chapterIndex, sectionIndex);
                       },
                       child: _buildSectionItem(
-                        section,
+                        {
+                          'title': section.title,
+                          'status': section.status,
+                        },
                         isSelected,
                         controller,
                         isLastItem: sectionIndex == sections.length - 1,
@@ -217,22 +216,22 @@ class ChaptersSidebar extends StatelessWidget {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: status == 'Completed'
-                ? Colors.indigoAccent
-                : Colors.transparent,
+            color: status == VideoStatus.completed.name
+                ? AppColors.indigoAccent
+                : AppColors.transparent,
             borderRadius: BorderRadius.circular(size / 2),
-            border: status == 'Uncompleted'
-                ? Border.all(color: Colors.indigoAccent, width: 4.sp)
-                : status == 'Unwatched'
+            border: status == VideoStatus.uncompleted.name
+                ? Border.all(color: AppColors.indigoAccent, width: 4.sp)
+                : status == VideoStatus.unwatched.name
                     ? Border.all(
-                        color: Colors.grey.withOpacity(0.3), width: 2.sp)
+                        color: AppColors.greyColor.withOpacity(0.3), width: 2.sp)
                     : null,
           ),
           child: Center(
-            child: status == 'Completed'
+            child: status == VideoStatus.completed.name
                 ? const Icon(
                     Icons.check,
-                    color: Colors.white,
+                    color: AppColors.whiteColor,
                     size: 12,
                   )
                 : null,
@@ -245,7 +244,7 @@ class ChaptersSidebar extends StatelessWidget {
             width: 2.w,
             height: isSelected ? 50.h : 40.h,
             margin: EdgeInsets.only(top: 4.h),
-            color: isSelected ? Colors.red : Colors.grey.withOpacity(0.3),
+            color: isSelected ? AppColors.red : AppColors.greyColor.withOpacity(0.3),
           ),
       ],
     );
@@ -273,13 +272,11 @@ class ChaptersSidebar extends StatelessWidget {
           Flexible(
             child: Text(
               section['title']!,
-              style: TextStyle(
-                fontSize: 16.sp,
-                decoration:
-                    isSelected ? TextDecoration.underline : TextDecoration.none,
+              style: AppTextStyles.withDecoration(
+                AppTextStyles.h3,
+                underline: isSelected,
                 decorationColor: isSelected ? Colors.red : null,
                 decorationThickness: isSelected ? 2.0 : null,
-                fontFamily: 'Aboreto',
               ),
               overflow: TextOverflow.ellipsis,
             ),

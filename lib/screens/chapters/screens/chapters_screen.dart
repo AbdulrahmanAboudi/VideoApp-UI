@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_video_app/core/constants/strings/app_strings.dart';
+import 'package:flutter_video_app/core/constants/colors/app_colors.dart';
+import 'package:flutter_video_app/core/enums/message_enum.dart';
 import 'package:flutter_video_app/screens/chapters/components/bars/appbars/custom_chapters_appbar.dart';
 import 'package:flutter_video_app/screens/chapters/components/widgets/chapters_screen_body.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,7 @@ class ChaptersScreen extends StatelessWidget {
     Get.put(ChapterScreenController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.whiteColor,
       appBar: customChaptersAppBar(),
       body: GetBuilder<ChapterScreenController>(
         builder: (controller) {
@@ -23,7 +24,7 @@ class ChaptersScreen extends StatelessWidget {
             return const ChaptersScreenBody(
               videos: [],
               showEmptyMessage: true,
-              emptyMessage: AppStrings.selectSection,
+              customMessage: CustomMessage.selectSection,
             );
           }
 
@@ -33,7 +34,7 @@ class ChaptersScreen extends StatelessWidget {
             return const ChaptersScreenBody(
               videos: [],
               showEmptyMessage: true,
-              emptyMessage: AppStrings.noVideosAvailable,
+              customMessage: CustomMessage.noVideos,
             );
           }
 
